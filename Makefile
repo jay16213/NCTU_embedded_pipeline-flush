@@ -16,6 +16,14 @@ pipeline: pipeline.c
 pipeline_flush: pipeline.c
 	$(ARM_CC) $(ARM_CFLAGS) -DFLUSH -o $@ $<
 
+cache-test: $(EXEC)
+	perf stat --repeat 5 \
+				-e cache-misses,cache-references,instructions,cycles \
+				./pipeline
+	perf stat --repeat 5 \
+				-e cache-misses,cache-references,instructions,cycles \
+				./pipeline_flush
+
 .PHONY: clean
 clean:
 	$(RM) $(EXEC)
